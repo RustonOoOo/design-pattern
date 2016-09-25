@@ -108,3 +108,5 @@ public:
 ![](https://github.com/RustonOoOo/design-pattern/blob/master/Observer/pic/obs3.png)<br>
 #### 观察者模式UML图总结如下<br>
 ![观察者模式个各类的关系](https://github.com/RustonOoOo/design-pattern/blob/master/Observer/pic/obs3.png)<br>
+
+---
