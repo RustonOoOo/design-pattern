@@ -8,12 +8,6 @@
 ![天气预报与观察者](https://github.com/RustonOoOo/design-pattern/blob/master/Observer/pic/obs1.png)
 **代码如下**:<br>
 ```c++
-#ifndef DESIGNPATTERN_OBSERVABLE_H
-#define DESIGNPATTERN_OBSERVABLE_H
-
-#include "Observer.h"
-#include <vector>
-using namespace std;
 class Observer;
 class Observable {//观察者所观察的对象
 private:
@@ -37,10 +31,6 @@ public:
     void notifyDataChanged();//通知所有观察者
 };
 
-
-
-
-
 class WeatherData : public Observable {//天气为所观察的对象
 protected:
     double temperature;
@@ -51,25 +41,11 @@ public:
     double getHumidity();
     double getPressure();
 };
-#endif //DESIGNPATTERN_OBSERVABLE_H
 ```
 这些数据可以向不同的布告板发送数据,如下图:<br>
 ![布告板](https://github.com/RustonOoOo/design-pattern/blob/master/Observer/pic/obs2.png)<br>
 布告板包括了天气新闻,气象预测等,他们继承自Observer覆写了函数<code>update</code>和<code>display</code><br>
 ```c++
-//
-// Created by Administrator on 2016/9/11.
-//
-
-#ifndef DESIGNPATTERN_OBSERVER_H
-#define DESIGNPATTERN_OBSERVER_H
-
-#include <vector>
-#include <algorithm>
-#include <iostream>
-#include "Observable.h"
-class Observable;
-using namespace std;
 class Observer {//观察者
 protected:
     double temperature;
@@ -91,8 +67,6 @@ public:
     virtual void display();
 };
 
-
-
 class WeatherForecast: public Observer {//气象预测
 public:
     WeatherForecast(Observable* o):Observer(o){}
@@ -100,9 +74,6 @@ public:
     virtual void display();
     void foreCast();
 };
-
-
-#endif //DESIGNPATTERN_OBSERVER_H
 ```
 **各个类的关系图:**
 ![](https://github.com/RustonOoOo/design-pattern/blob/master/Observer/pic/obs3.png)<br>
@@ -115,16 +86,16 @@ public:
 装饰者模式,举个例子,游戏中的武器分为三种有:散弹枪(Scanner),手枪(HandGun),狙击枪(Sniper).然后我们可以用几种附加组件来增强他们的能力,这里我们有激光(Laser),辐射(Radiation),以及电(Electron ),我们怎么才能把任意的组件来粉饰我们的武器呢,用装饰者模式可以很好的做到,参见图<br>
 ![装饰器模式](https://github.com/RustonOoOo/design-pattern/blob/master/Decorator/pic/dec1.png)
 
-**这是武器的类:**<br>
+**这是武器的类:**分为三个类狙击枪,手枪,散弹枪<br>
 ```c++
-lass Weapon {
+class Weapon {
 public:
     virtual void shoot() = 0;//开枪
     virtual double getDamage() = 0;//计算伤害量
     virtual ~Weapon(){}
 };
 
-class ScannerGun : public Weapon {
+class ScannerGun : public Weapon {//散弹枪
 public:
     virtual void shoot() {
         cout << "Scanner shooting->: ";
@@ -133,7 +104,7 @@ public:
         return 1.0;
     }
 };
-class SniperGun : public Weapon {
+class SniperGun : public Weapon {//狙击枪
 public:
     virtual void shoot() {
         cout << "SniperGun shooting->: ";
@@ -142,7 +113,7 @@ public:
         return 2.0;
     }
 };
-class HandGun : public Weapon {
+class HandGun : public Weapon {//手枪
 public:
     virtual void shoot() {
         cout << "HandGun shooting->: ";
@@ -155,16 +126,13 @@ public:
 **这是组件的类**:他们继承了武器,然后又组合了武器,这样的好处在于,我们可以将用<code>Weapon* w = Laser(Gun)</code>生成一个镭射枪后,为了再给他加上任意余下的组件我们可以:<code>w = Radiation(w)</code>也可以<code>w = Electron(w)</code>甚至可以加双倍的镭射等等,这样将武器与组件联系在一起又不至于太耦合,依赖抽象而不是依赖具体类!(**可以改进的地方**:用智能指针)
 ```c++
 class WeaponDecorator: public Weapon {//包裹器抽象类
-
 public:
     WeaponDecorator(){}
     void shoot(){};
     double getDamage(){};
 
 };
-
 class Laser : public WeaponDecorator {//激光
-
 protected:
     const static double LaserDamage;
     Weapon* wrapped;
@@ -179,7 +147,6 @@ public:
     }
 };
 const double Laser::LaserDamage = 5.0;
-
 class Radiation : public WeaponDecorator {//辐射
 protected:
     Weapon* wrapped;
@@ -195,7 +162,6 @@ public:
     }
 };
 const double Radiation::RadiationDamage = 2.0;
-
 class Electron : public WeaponDecorator {//电
 protected:
     Weapon* wrapped;
@@ -212,7 +178,6 @@ public:
 };
 const double Electron::ElectronDamage = 4.0;
 ```
-
 **测试:**
 ```c++
 void testw() {
@@ -245,5 +210,5 @@ with damage :13
 Elec-HandGun:
 HandGun shooting->: ~~~~^^ELE>>>--~~with damage :4.5
 ```
-**总结UML图**
+##### 装饰者UML图<br>
 ![decorator](https://github.com/RustonOoOo/design-pattern/blob/master/Decorator/pic/dec2.jpg)
