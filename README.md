@@ -212,3 +212,118 @@ HandGun shooting->: ~~~~^^ELE>>>--~~with damage :4.5
 ```
 ##### 装饰者UML图<br>
 ![decorator](https://github.com/RustonOoOo/design-pattern/blob/master/Decorator/pic/dec2.jpg)
+
+---
+
+##3. Factory
+**工厂模式与抽象工厂模式**:*工厂模式*是在抽象类类中设计一个类似于<code>create()</code>的方法,然后由子类继承之,覆写该方法,以此产生不同的对象.而*抽象工厂*将create方法抽象成一个抽象类,由该类制定如何生产,该方法的好处在于不同的制造厂商可以拥有不同的工厂,将接口与对象解耦.下面是代码中(抽象工厂模式)汽车商家和汽车以及汽车工厂的UML图,代码将在后面给出.<br>
+![抽象工厂模式](https://github.com/RustonOoOo/design-pattern/blob/master/Factory/pic/fac1.png)<br>
+如图,汽车为所生产的对象,汽车经销商组合了汽车工厂(分为中档轿车工厂,高档跑车工厂),不同的工厂生成汽车的方式不一样,这样就达到解耦效果.下面是代码<br>
+**气车类**
+```c++
+class Car {
+protected:
+    double lossRate;//损耗度
+    double fuelLeft;//剩余油量
+    double speed;//速度
+public:
+    virtual void drive() = 0;
+};
+
+class Roadster : public Car {//跑车
+public:
+    Roadster():Car(),lossRate(0),fuelLeft(1.0),speed(0){}
+    void drive() {
+        lossRate += 30;
+        fuelLeft -= 0.3;
+        speed += 100;
+        std::cout << "Roadster comming >>>>>" << std::endl;
+    }
+};
+
+class Sedan : public Car {//轿车
+public:
+    Sedan():Car(),lossRate(0),fuelLeft(1.0),speed(0){}
+    void drive() {
+        lossRate += 20;
+        fuelLeft -= 0.2;
+        speed += 60;
+        std::cout << "Sedan comming ~~~~~" << std::endl;
+    }
+};
+
+class OffRoad : public Car {//越野
+public:
+    OffRoad():Car(),lossRate(0),fuelLeft(1.0),speed(0){}
+    void drive() {
+        lossRate += 50;
+        fuelLeft -= 0.3;
+        speed += 50;
+        std::cout << "OffRoad comming VNVNVNVNVNVN" << std::endl;
+    }
+};
+```
+<br>
+**汽车经销商**<br>
+```c++
+class CarCompany {
+public:
+    virtual void repairCar(Car& c) = 0;//修车
+    virtual void refuel(Car& c) = 0;//加油
+    virtual Car* buildCar() = 0;////用工厂来生产不同的汽车
+    void packAll() {//模板方法
+        //box();
+        //package();
+        //buildCar();调用子类方法
+    }
+};
+
+class Benz : public CarCompany{
+    CarFactory* factory;
+public:
+    Benz(CarFactory* f):CarCompany(),factory(f){}
+    virtual void repairCar(Car& c);
+    virtual void refuel(Car& c);
+    virtual Car* buildCar();//用工厂来生产不同的汽车
+};
+
+class Audi : public CarCompany{
+    CarFactory* factory;
+public:
+    Audi(CarFactory* f):CarCompany(),factory(f){}
+    virtual void repairCar(Car& c);
+    virtual void refuel(Car& c);
+    virtual Car* buildCar();
+};
+
+class RollsRoyce : public CarCompany{
+    CarFactory* factory;
+public:
+    RollsRoyce(CarFactory* f):CarCompany(),factory(f){}
+    virtual void repairCar(Car& c);
+    virtual void refuel(Car& c);
+    virtual Car* buildCar();
+};
+```
+**抽象工厂类**<br>
+```c++
+class CarFactory {//抽象工厂
+public:
+    virtual void createWheel();//生产轮子
+    virtual void createEngine();//生产引擎
+    virtual void createFrame();//生产汽车框架
+};
+
+class AdvancedRoadsterFactory : public CarFactory{//高级跑车工厂
+    //...
+};
+
+class IntermediateSedanFactory : public CarFactory {//中档轿车工厂
+    //..
+};
+```
+##### 抽象工厂UML图<br>
+![AbstactFactory](https://github.com/RustonOoOo/design-pattern/blob/master/Factory/pic/fac2.png)<br>
+其中,client对应汽车经销商,Factory对应CarFactory,Product对应Car
+
+---
