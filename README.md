@@ -324,6 +324,5 @@ class IntermediateSedanFactory : public CarFactory {//中档轿车工厂
 ```
 ##### 抽象工厂UML图<br>
 ![AbstactFactory](https://github.com/RustonOoOo/design-pattern/blob/master/Factory/pic/fac2.png)<br>
-其中,client对应汽车经销商,Factory对应CarFactory,Product对应Car
-
+其中,client对应汽车经销商,Factory对应CarFactory,Product对应Car,体现依赖抽象,不依赖具体类的思想
 ---
