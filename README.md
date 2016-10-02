@@ -325,4 +325,132 @@ class IntermediateSedanFactory : public CarFactory {//中档轿车工厂
 ##### 抽象工厂UML图<br>
 ![AbstactFactory](https://github.com/RustonOoOo/design-pattern/blob/master/Factory/pic/fac2.png)<br>
 其中,client对应汽车经销商,Factory对应CarFactory,Product对应Car,体现依赖抽象,不依赖具体类的思想
+
 ---
+
+### 4.Command
+
+**命令模式**,举个例子多功能遥控器,同一面板集合了不同的功能,按钮可以被打开(ButtonOn)和关闭(ButtonOff),甚至可以返回上一个状态(undo),每一种功能对应一个命令(Command).<br>
+![遥控器](https://github.com/RustonOoOo/design-pattern/blob/master/Command/pic/cmd1.png)<br>
+```c++ 
+class Command{//interface
+public:
+    virtual void excute()=0;//执行命令
+    virtual void undo() = 0;//回滚
+};
+
+class LightOn : public Command {//开灯
+private:
+    std::shared_ptr<Light> light;
+public:
+    LightOn(Light* l):
+            light(l){}
+
+public:
+    void excute()override{light->turnon();}
+    void undo()override {light->undo();}
+};
+
+class LightOff : public Command {//关灯
+private:
+    Light* light;
+public:
+    LightOff(Light* l):
+    light(l){}
+public:
+    void excute()override{light->turnoff();}
+    void undo()override {light->undo();}
+};
+
+class FanRotateSlow: public Command {//风扇低速转动
+private:
+    ElectricFan* efan;
+public:
+    FanRotateSlow(ElectricFan* e):efan(e){}
+    void excute()override{efan->low();}
+    void undo()override {efan->undo();}
+};
+class FanOff: public Command {//风扇低速转动
+private:
+    ElectricFan* efan;
+public:
+    FanOff(ElectricFan* e):efan(e){}
+    void excute()override{efan->off();}
+    void undo()override {efan->undo();}
+};
+
+class FanRotateMedium : public Command {//中速转动
+private:
+    ElectricFan* efan;
+public:
+    FanRotateMedium(ElectricFan* e):efan(e){}
+    void excute()override{efan->mid();}
+    void undo()override {efan->undo();}
+};
+class FanRotateFast : public Command {//高速转动
+private:
+    ElectricFan* efan;
+public:
+    FanRotateFast(ElectricFan* e):efan(e){}
+    void excute()override{efan->high();}
+    void undo()override {efan->undo();}
+};
+
+struct NULLCMD : public Command{//空命令
+public:
+    virtual void excute(){}//
+    virtual void undo(){}
+};
+
+class TurnOnAll: public Command {//开启所有执行命令
+private:
+    vector<Command*> commands;
+public:
+    TurnOnAll(vector<Command*> cmds):commands(cmds){}
+
+    void excute()override{
+        for(auto p : commands) {
+            p->excute();
+        }
+    }
+    void undo()override {
+        cerr << "cannot undo" << endl;
+    }
+};
+```
+```c++
+struct Light{
+    bool lastState;
+    bool isLightOn;
+    Light():lastState(false),isLightOn(false){}
+    void turnon() {
+        lastState = isLightOn;
+        isLightOn = true;
+    }
+    void turnoff() {
+        lastState = isLightOn;
+        isLightOn = false;
+    }
+    void undo() {
+        isLightOn = lastState;
+    }
+};
+
+struct ElectricFan{
+    int lastState;
+    int speed;
+    ElectricFan():speed(0),lastState(0){}
+    void off(){lastState = speed;speed = 0;}
+    void low(){lastState = speed;speed = 5;}
+    void mid(){lastState = speed;speed = 7;}
+    void high(){lastState = speed;speed = 10;}
+    void undo(){speed = lastState;}
+};
+
+```
+**命令模式UML**:
+![命令模式](https://github.com/RustonOoOo/design-pattern/blob/master/Command/pic/cmd2.png)<br>
+
+
+
+
